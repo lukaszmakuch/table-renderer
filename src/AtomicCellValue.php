@@ -18,5 +18,6 @@ abstract class AtomicCellValue implements TableElement
 {
     public function accept(TableVisitor $visitor)
     {
+        $visitor->visitAtomicCellValue($this);
     }
 }

@@ -21,5 +21,6 @@ class VerticalContainer extends Container
 {
     public function accept(TableVisitor $visitor)
     {
+        $visitor->visitVerticalContainer($this);
     }
 }

@@ -18,5 +18,5 @@ interface TableVisitor
 {
     public function visitAtomicCellValue(AtomicCellValue $atomicCellValue);
     public function visitHorizontalContainer(HorizontalContainer $horizontalContainer);
-    public function visitVerticalContainer(verticalContainer $verticalContainer);
+    public function visitVerticalContainer(VerticalContainer $verticalContainer);
 }

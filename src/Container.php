@@ -17,6 +17,11 @@ namespace lukaszmakuch\TableRenderer;
 abstract class Container implements TableElement
 {
     /**
+     * @var TableElement[]
+     */
+    private $elements = [];
+    
+    /**
      * Adds a new element to the container.
      * 
      * @param TableElement $element
@@ -25,6 +30,8 @@ abstract class Container implements TableElement
      */
     public function add(TableElement $element)
     {
+        $this->elements[] = $element;
+        return $this;
     }
     
     /**
@@ -32,9 +39,6 @@ abstract class Container implements TableElement
      */
     public function getElements()
     {
-    }
-    
-    public function accept(TableVisitor $visitor)
-    {
+        return $this->elements;
     }
 }

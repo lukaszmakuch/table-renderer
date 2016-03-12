@@ -26,5 +26,7 @@ class TextValue extends AtomicCellValue
     /**
      * @return String held text value
      */
-    public function getText();
+    public function getText()
+    {
+    }
 }
