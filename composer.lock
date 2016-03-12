@@ -4,9 +4,48 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6aef6a32fc82d59d404927149b7b540a",
-    "content-hash": "ca68c59dbcd7e2f533a06dc2e0ba8d70",
-    "packages": [],
+    "hash": "da0b9c7a8a2645a1649185ec8429d862",
+    "content-hash": "69dee857c14be43277c2cb95fad77ae6",
+    "packages": [
+        {
+            "name": "lukaszmakuch/math",
+            "version": "v0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lukaszmakuch/math.git",
+                "reference": "0b519820df9c5036bb6cbdffaf21921e6fe504b3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lukaszmakuch/math/zipball/0b519820df9c5036bb6cbdffaf21921e6fe504b3",
+                "reference": "0b519820df9c5036bb6cbdffaf21921e6fe504b3",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpdocumentor/phpdocumentor": "2.*",
+                "phpunit/phpunit": "4.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "lukaszmakuch\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Łukasz Makuch",
+                    "email": "kontakt@lukaszmakuch.pl",
+                    "homepage": "http://lukaszmakuch.pl"
+                }
+            ],
+            "description": "Allows to compute the least common multiple and the greatest common divisor.",
+            "time": "2016-03-12 16:05:00"
+        }
+    ],
     "packages-dev": [
         {
             "name": "cilex/cilex",
