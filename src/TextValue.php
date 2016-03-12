@@ -16,11 +16,14 @@ namespace lukaszmakuch\TableRenderer;
  */
 class TextValue extends AtomicCellValue
 {
+    private $itsText;
+    
     /**
      * @param String $itsText held text value
      */
     public function __construct($itsText)
     {
+        $this->itsText = $itsText;
     }
     
     /**
@@ -28,5 +31,6 @@ class TextValue extends AtomicCellValue
      */
     public function getText()
     {
+        return $this->itsText;
     }
 }
