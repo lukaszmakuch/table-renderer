@@ -42,6 +42,6 @@ class HorizontalContainer extends Container
 
     public function accept(TreeVisitor $visitor)
     {
-        $visitor->visitHorizontalComposite($this);
+        $visitor->visitHorizontalContainer($this);
     }
 }

@@ -9,6 +9,8 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\FlatGrid;
 
+use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGrid\Exception\ValueNotFound;
+
 /**
  * Represents a two dimensional grid (ready to be used to render a html table).
  * 
@@ -74,7 +76,7 @@ class FlatGrid
     public function getValueHolderAt($x, $y)
     {
         if (!$this->hasValueHolderAt($x, $y)) {
-            throw new Exception\ValueNotFound();
+            throw new ValueNotFound();
         }
         
         return $this->valueHolders[$y][$x];
