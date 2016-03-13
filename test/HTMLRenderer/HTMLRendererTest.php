@@ -40,23 +40,9 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->attrs = new ObjectAttributeContainerImpl();
-        $this->htmlRenderer = new HTMLRenderer(
-            new SizeAwareTreeBuilder(
-                new VerticalContainerFactory(
-                    new SynchronizerFactoryImpl(
-                        new HeightSyncStrategy()
-                    )
-                ),
-                new HorizontalContainerFactory(
-                    new SynchronizerFactoryImpl(
-                        new WidthSyncStrategy()
-                    )
-                )
-            ),
-            new FlatGridBuilder(),
-            new TextRenderer(),
-            $this->attrs  
-        );
+        $builder = new HTMLRendererBuilder();
+        $builder->setAttributeContainer($this->attrs);
+        $this->htmlRenderer = $builder->buildRenderer();
     }
     
     public function testRenderingTable()
