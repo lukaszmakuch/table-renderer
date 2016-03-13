@@ -31,7 +31,7 @@ class HTMLRendererBuilder
      * @var ObjectAttributeContainer
      */
     private $attributeContainer;
-
+    
     public function __construct()
     {
         $this->attributeContainer = new ObjectAttributeContainerImpl();

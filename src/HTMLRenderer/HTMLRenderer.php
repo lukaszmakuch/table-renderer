@@ -34,6 +34,18 @@ class HTMLRenderer
     private $atomicValueRenderer;
     private $attrs;
     
+    /**
+     * Provides dependencies.
+     * 
+     * @param SizeAwareTreeBuilder $sizeAwareTreeBuilderPrototype builds a tree
+     * with leaves which know their size in columns and rows
+     * @param FlatGridBuilder $flatGridBuilderPrototype builds flat grid which 
+     * is the final form ready to be translated to HTML
+     * @param AtomicValueRenderer $atomicValueRenderer renders values which are
+     * not composites, that is are unsplittable
+     * @param ObjectAttributeContainer $attributeContainer holds all additional
+     * attributes used to render HTML which are not a part of the table itself
+     */
     public function __construct(
         SizeAwareTreeBuilder $sizeAwareTreeBuilderPrototype,
         FlatGridBuilder $flatGridBuilderPrototype,

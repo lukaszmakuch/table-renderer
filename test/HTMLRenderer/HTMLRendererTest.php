@@ -11,42 +11,21 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer;
 
 use DOMDocument;
 use lukaszmakuch\ObjectAttributeContainer\Impl\ObjectAttributeContainerImpl;
-use lukaszmakuch\ObjectAttributeContainer\ObjectAttributeContainer;
 use lukaszmakuch\TableRenderer\HorizontalContainer;
-use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\TextRenderer;
-use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGridBuilder\FlatGridBuilder;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\HorizontalContainerFactory;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Factory\SynchronizerFactoryImpl;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\HeightSyncStrategy;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\WidthSyncStrategy;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\VerticalContainerFactory;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTreeBuilder\SizeAwareTreeBuilder;
 use lukaszmakuch\TableRenderer\TextValue;
 use lukaszmakuch\TableRenderer\VerticalContainer;
 use PHPUnit_Framework_TestCase;
 
 class HTMLRendererTest extends PHPUnit_Framework_TestCase
 {
-    /**
-     * @var HTMLRenderer
-     */
-    private $htmlRenderer;
-    
-    /**
-     * @var ObjectAttributeContainer
-     */
-    private $attrs;
-
-    protected function setUp()
-    {
-        $this->attrs = new ObjectAttributeContainerImpl();
-        $builder = new HTMLRendererBuilder();
-        $builder->setAttributeContainer($this->attrs);
-        $this->htmlRenderer = $builder->buildRenderer();
-    }
     
     public function testRenderingTable()
     {
+        $attrs = new ObjectAttributeContainerImpl();
+        $builder = new HTMLRendererBuilder();
+        $builder->setAttributeContainer($attrs);
+        $htmlRenderer = $builder->buildRenderer();
+        
         /**
          * _________
          * |a|  x  |
@@ -58,10 +37,10 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
          * |_|_ |__|
          */
         
-        $tableTree = $this->attrs->addObjAttrs((new VerticalContainer())
+        $tableTree = $attrs->addObjAttrs((new VerticalContainer())
             ->add((new HorizontalContainer())
                 ->add(new TextValue("a"))
-                ->add($this->attrs->addObjAttrs(
+                ->add($attrs->addObjAttrs(
                     new TextValue("b"),
                     ['attrs' => ['class' => 'cell']]
                 ))
@@ -75,7 +54,7 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
                 )
             ), ["attrs" => ['border' => 1]]);
         
-        $renderedHTML = $this->htmlRenderer->renderHTMLBasedOn($tableTree);
+        $renderedHTML = $htmlRenderer->renderHTMLBasedOn($tableTree);
         
         //load result to parser
         $dom = new DOMDocument();
