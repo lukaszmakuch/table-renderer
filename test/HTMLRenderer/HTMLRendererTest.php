@@ -10,6 +10,8 @@
 namespace lukaszmakuch\TableRenderer\HTMLRenderer;
 
 use DOMDocument;
+use lukaszmakuch\ObjectAttributeContainer\Impl\ObjectAttributeContainerImpl;
+use lukaszmakuch\ObjectAttributeContainer\ObjectAttributeContainer;
 use lukaszmakuch\TableRenderer\HorizontalContainer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\TextRenderer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGridBuilder\FlatGridBuilder;
@@ -29,9 +31,15 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
      * @var HTMLRenderer
      */
     private $htmlRenderer;
+    
+    /**
+     * @var ObjectAttributeContainer
+     */
+    private $attrs;
 
     protected function setUp()
     {
+        $this->attrs = new ObjectAttributeContainerImpl();
         $this->htmlRenderer = new HTMLRenderer(
             new SizeAwareTreeBuilder(
                 new VerticalContainerFactory(
@@ -46,7 +54,8 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
                 )
             ),
             new FlatGridBuilder(),
-            new TextRenderer()
+            new TextRenderer(),
+            $this->attrs  
         );
     }
     
@@ -66,7 +75,10 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
         $tableTree = (new VerticalContainer())
             ->add((new HorizontalContainer())
                 ->add(new TextValue("a"))
-                ->add(new TextValue("b"))
+                ->add($this->attrs->addObjAttrs(
+                    new TextValue("b"),
+                    ['attrs' => ['class' => 'cell']]
+                ))
             )
             ->add((new HorizontalContainer())
                 ->add(new TextValue("x"))
@@ -125,6 +137,8 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
         $bCell = $bCells->item(0);
         $this->assertEquals("b", $bCell->nodeValue);
         $this->assertEquals(3, $bCell->getAttribute("rowspan"));
+        $this->assertTrue($bCell->hasAttribute("class"));
+        $this->assertEquals("cell", $bCell->getAttribute("class"));
         
         //check row with "z1" and "z2"
         $zRow = $trElements->item(4);

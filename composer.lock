@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "da0b9c7a8a2645a1649185ec8429d862",
-    "content-hash": "69dee857c14be43277c2cb95fad77ae6",
+    "hash": "c3b4b1d61171f66720bbbc435b47e42c",
+    "content-hash": "904a7044bac340ec475c1351961818cd",
     "packages": [
         {
             "name": "lukaszmakuch/math",
@@ -44,6 +44,44 @@
             ],
             "description": "Allows to compute the least common multiple and the greatest common divisor.",
             "time": "2016-03-12 16:05:00"
+        },
+        {
+            "name": "lukaszmakuch/object-attribute-container",
+            "version": "v0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lukaszmakuch/object-attribute-container.git",
+                "reference": "7898f6abdd9e7730a47230fb946e9360024caa35"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lukaszmakuch/object-attribute-container/zipball/7898f6abdd9e7730a47230fb946e9360024caa35",
+                "reference": "7898f6abdd9e7730a47230fb946e9360024caa35",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpdocumentor/phpdocumentor": "2.*",
+                "phpunit/phpunit": "4.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "lukaszmakuch\\ObjectAttributeContainer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Łukasz Makuch",
+                    "email": "kontakt@lukaszmakuch.pl",
+                    "homepage": "http://lukaszmakuch.pl"
+                }
+            ],
+            "description": "Allows to attach some attributes to objects",
+            "time": "2016-03-10 19:20:19"
         }
     ],
     "packages-dev": [

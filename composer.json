@@ -26,6 +26,7 @@
         "phpdocumentor/phpdocumentor": "2.*"
     },
     "require": {
-        "lukaszmakuch/math": "^0.1.0"
+        "lukaszmakuch/math": "^0.1.0",
+        "lukaszmakuch/object-attribute-container": "^0.1.0"
     }
 }

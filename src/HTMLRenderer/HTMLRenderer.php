@@ -10,6 +10,7 @@
 namespace lukaszmakuch\TableRenderer\HTMLRenderer;
 
 use DOMDocument;
+use lukaszmakuch\ObjectAttributeContainer\ObjectAttributeContainer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRenderer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGrid\FlatGrid;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGridBuilder\FlatGridBuilder;
@@ -18,18 +19,23 @@ use lukaszmakuch\TableRenderer\TableElement;
 
 class HTMLRenderer
 {
+    const HTML_ATTRS_KEY = "attrs";
+    
     private $sizeAwareTreeBuilderPrototype;
     private $flatGridBuilderPrototype;
     private $atomicValueRenderer;
+    private $attrs;
     
     public function __construct(
         SizeAwareTreeBuilder $sizeAwareTreeBuilderPrototype,
         FlatGridBuilder $flatGridBuilderPrototype,
-        AtomicValueRenderer $atomicValueRenderer
+        AtomicValueRenderer $atomicValueRenderer,
+        ObjectAttributeContainer $attributeContainer
     ) {
         $this->sizeAwareTreeBuilderPrototype = $sizeAwareTreeBuilderPrototype;
         $this->flatGridBuilderPrototype = $flatGridBuilderPrototype;
         $this->atomicValueRenderer = $atomicValueRenderer;
+        $this->attrs = $attributeContainer;
     }
     
     /**
@@ -59,6 +65,7 @@ class HTMLRenderer
                 if ($flatGrid->hasValueHolderAt($colIndex, $rowIndex)) {
                     $valueHolder = $flatGrid->getValueHolderAt($colIndex, $rowIndex);
                     $td = $html->createElement("td");
+                    $this->addHTMLAttrs($td, $valueHolder->getHeldValue());
                     $td->appendChild($this->atomicValueRenderer->render($valueHolder->getHeldValue()));
                     $td->setAttribute("colspan", $valueHolder->getWidth());
                     $td->setAttribute("rowspan", $valueHolder->getHeight());
@@ -71,5 +78,16 @@ class HTMLRenderer
         
         $html->appendChild($domTable);
         return $html->saveHTML();
+    }
+    
+    private function addHTMLAttrs(\DOMElement $HTMLCell, TableElement $cellModel)
+    {
+        if (!$this->attrs->objHasAttr($cellModel, self::HTML_ATTRS_KEY)) {
+            return;
+        }
+        
+        foreach ($this->attrs->getObjAttrVal($cellModel, self::HTML_ATTRS_KEY) as $attrName => $attrVal) {
+            $HTMLCell->setAttribute($attrName, $attrVal);
+        }
     }
 }
