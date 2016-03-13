@@ -125,6 +125,8 @@ $tree = $attrs->addObjAttrs(
 /* @var $renderer HTMLRenderer */
 echo $renderer->renderHTMLBasedOn($tree);
 ```
+## Examples
+Check examples in the [examples directory](examples/)
 ## Installation
 Use [composer](https://getcomposer.org) to get the latest version:
 ```
