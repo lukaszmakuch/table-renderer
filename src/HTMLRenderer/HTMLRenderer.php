@@ -58,6 +58,7 @@ class HTMLRenderer
         $html = new DOMDocument();
         
         $domTable = $html->createElement("table");
+        $this->addHTMLAttrs($domTable, $table);
         
         for($rowIndex = 0; $rowIndex < $flatGrid->getHeight(); $rowIndex++) {
             $tr = $html->createElement("tr");
@@ -79,15 +80,15 @@ class HTMLRenderer
         $html->appendChild($domTable);
         return $html->saveHTML();
     }
-    
-    private function addHTMLAttrs(\DOMElement $HTMLCell, TableElement $cellModel)
+
+    private function addHTMLAttrs(\DOMElement $HTMLRepresentation, TableElement $model)
     {
-        if (!$this->attrs->objHasAttr($cellModel, self::HTML_ATTRS_KEY)) {
+        if (!$this->attrs->objHasAttr($model, self::HTML_ATTRS_KEY)) {
             return;
         }
         
-        foreach ($this->attrs->getObjAttrVal($cellModel, self::HTML_ATTRS_KEY) as $attrName => $attrVal) {
-            $HTMLCell->setAttribute($attrName, $attrVal);
+        foreach ($this->attrs->getObjAttrVal($model, self::HTML_ATTRS_KEY) as $attrName => $attrVal) {
+            $HTMLRepresentation->setAttribute($attrName, $attrVal);
         }
     }
 }

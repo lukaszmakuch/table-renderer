@@ -72,7 +72,7 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
          * |_|_ |__|
          */
         
-        $tableTree = (new VerticalContainer())
+        $tableTree = $this->attrs->addObjAttrs((new VerticalContainer())
             ->add((new HorizontalContainer())
                 ->add(new TextValue("a"))
                 ->add($this->attrs->addObjAttrs(
@@ -87,7 +87,7 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
                     ->add(new TextValue("z1"))
                     ->add(new TextValue("z2"))
                 )
-            );
+            ), ["attrs" => ['border' => 1]]);
         
         $renderedHTML = $this->htmlRenderer->renderHTMLBasedOn($tableTree);
         
@@ -95,10 +95,12 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
         $dom = new DOMDocument();
         $dom->loadHTML($renderedHTML);
         
-        //asser just one <table>
+        //assert just one <table> with proper attrs
         $domTables = $dom->getElementsByTagName("table");
         $this->assertEquals(1, $domTables->length);
         $domTable = $domTables->item(0);
+        $this->assertTrue($domTable->hasAttribute("border"));
+        $this->assertEquals(1, $domTable->getAttribute("border"));
         
         //get all 6 <tr>
         $trElements = $domTable->getElementsByTagName("tr");
