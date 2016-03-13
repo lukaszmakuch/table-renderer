@@ -10,16 +10,24 @@
 namespace lukaszmakuch\TableRenderer\HTMLRenderer;
 
 use DOMDocument;
+use DOMElement;
+use DOMNode;
 use lukaszmakuch\ObjectAttributeContainer\ObjectAttributeContainer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRenderer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGrid\FlatGrid;
+use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGrid\ValueHolder;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGridBuilder\FlatGridBuilder;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTreeBuilder\SizeAwareTreeBuilder;
 use lukaszmakuch\TableRenderer\TableElement;
 
+/**
+ * Renders HTML tables based on tree structures.
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 class HTMLRenderer
 {
-    const HTML_ATTRS_KEY = "attrs";
+    private static $HTML_ATTRS_KEY = "attrs";
     
     private $sizeAwareTreeBuilderPrototype;
     private $flatGridBuilderPrototype;
@@ -45,61 +53,113 @@ class HTMLRenderer
      */
     public function renderHTMLBasedOn(TableElement $table)
     {
+        $renderedDocument = new DOMDocument();
+        $newTable = $renderedDocument->createElement("table");
+        $this->addHTMLAttrs($newTable, $table);
+        $flatGrid = $this->buildGridBasedOn($table);
+        for($rowIndex = 0; $rowIndex < $flatGrid->getHeight(); $rowIndex++) {
+            $newRow = $renderedDocument->createElement("tr");
+            $this->fillRowWithCells($renderedDocument, $newRow, $rowIndex, $flatGrid);
+            $newTable->appendChild($newRow);
+        }
+        
+        $renderedDocument->appendChild($newTable);
+        return $renderedDocument->saveHTML();
+    }
+    
+    /**
+     * Fills a whole HTML row with cells read from the given flat grid.
+     * 
+     * @param DOMDocument $targetDocument
+     * @param DOMElement $targetRow
+     * @param int $rowIndex
+     * @param FlatGrid $sourceGrid
+     * 
+     * @return
+     */
+    private function fillRowWithCells(
+        \DOMDocument $targetDocument, 
+        \DOMElement $targetRow, 
+        $rowIndex, 
+        FlatGrid $sourceGrid
+    ) {
+        for($colIndex = 0; $colIndex < $sourceGrid->getWidth(); $colIndex++) {
+            if ($sourceGrid->hasValueHolderAt($colIndex, $rowIndex)) {
+                $cellModel = $sourceGrid->getValueHolderAt($colIndex, $rowIndex);
+                $this->addCell($cellModel, $targetRow, $targetDocument);
+            }
+        }
+    }
+    
+    /**
+     * @param ValueHolder $cellModel
+     * @param DOMElement $targetRow
+     * @param DOMDocument $targetDocument
+     * 
+     * @return null
+     */
+    private function addCell(
+        ValueHolder $cellModel, 
+        DOMElement $targetRow, 
+        \DOMDocument $targetDocument
+    ) {
+        $td = $targetDocument->createElement("td");
+        $this->addHTMLAttrs($td, $cellModel->getHeldValue());
+        $td->appendChild($this->renderCellValue($cellModel));
+        $td->setAttribute("colspan", $cellModel->getWidth());
+        $td->setAttribute("rowspan", $cellModel->getHeight());
+        $targetRow->appendChild($td);
+    }
+
+    /**
+     * @param ValueHolder $cellModel
+     * 
+     * @return DOMNode
+     */
+    private function renderCellValue(ValueHolder $cellModel)
+    {
+        return $this->atomicValueRenderer->render($cellModel->getHeldValue());
+    }
+    
+    /**
+     * @param TableElement $treeTableModel
+     * 
+     * @return FlatGrid
+     */
+    private function buildGridBasedOn(TableElement $treeTableModel)
+    {
+        //get builders based on prototypes
         $sizeAwareTreeBuilder = clone $this->sizeAwareTreeBuilderPrototype;
         $flatGridBuilder = clone $this->flatGridBuilderPrototype;
         
-        $table->accept($sizeAwareTreeBuilder);
+        //build size aware tree
+        $treeTableModel->accept($sizeAwareTreeBuilder);
         $sizeAwareTree = $sizeAwareTreeBuilder->getBuiltSizeAwareTree();
-        
-        $sizeAwareTree->accept($flatGridBuilder);
-        /* @var $flatGrid FlatGrid */
-        $flatGrid = $flatGridBuilder->getBuiltGrid();
-        
-        $html = new DOMDocument();
-        
-        $domTable = $html->createElement("table");
-        $this->addHTMLAttrs($domTable, $table);
-        
-        for($rowIndex = 0; $rowIndex < $flatGrid->getHeight(); $rowIndex++) {
-            $tr = $html->createElement("tr");
-            for($colIndex = 0; $colIndex < $flatGrid->getWidth(); $colIndex++) {
-                if ($flatGrid->hasValueHolderAt($colIndex, $rowIndex)) {
-                    $valueHolder = $flatGrid->getValueHolderAt($colIndex, $rowIndex);
-                    $td = $html->createElement("td");
-                    $this->addHTMLAttrs($td, $valueHolder->getHeldValue());
-                    $td->appendChild($this->atomicValueRenderer->render($valueHolder->getHeldValue()));
-                    $td->setAttribute("colspan", $valueHolder->getWidth());
-                    $td->setAttribute("rowspan", $valueHolder->getHeight());
-                    $tr->appendChild($td);
-                }
-            }
-            
-            $domTable->appendChild($tr);
-        }
-        
-        $html->appendChild($domTable);
-        return $html->saveHTML();
-    }
 
+        //build and return flat grid
+        $sizeAwareTree->accept($flatGridBuilder);
+        return $flatGridBuilder->getBuiltGrid();
+    }
+    
     /**
      * Reads HTML attributes of the given TableElement model 
      * from the attribute container and then applies them
      * to the given HTML DOMElement.
      * 
-     * @param \DOMElement $HTMLRepresentation
+     * @param DOMElement $HTMLRepresentation
      * @param TableElement $model
      * 
      * @return null
      */
-    private function addHTMLAttrs(\DOMElement $HTMLRepresentation, TableElement $model)
-    {
-        if (!$this->attrs->objHasAttr($model, self::HTML_ATTRS_KEY)) {
-            return;
-        }
-        
-        $elementAttrs = $this->attrs->getObjAttrVal($model, self::HTML_ATTRS_KEY);
-        foreach ($elementAttrs as $name => $val) {
-            $HTMLRepresentation->setAttribute($name, $val);
+    private function addHTMLAttrs(
+        DOMElement $HTMLRepresentation, 
+        TableElement $model
+    ) {
+        if ($this->attrs->objHasAttr($model, self::$HTML_ATTRS_KEY)) {
+            $attrs = $this->attrs->getObjAttrVal($model, self::$HTML_ATTRS_KEY);
+            foreach ($attrs as $name => $val) {
+                $HTMLRepresentation->setAttribute($name, $val);
+            }
         }
     }
 }
