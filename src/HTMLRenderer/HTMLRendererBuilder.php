@@ -54,7 +54,6 @@ class HTMLRendererBuilder
      */
     public function buildRenderer()
     {
-        $this->attrs = new ObjectAttributeContainerImpl();
         return new HTMLRenderer(
             new SizeAwareTreeBuilder(
                 new VerticalContainerFactory(
