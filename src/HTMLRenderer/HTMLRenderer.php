@@ -81,14 +81,25 @@ class HTMLRenderer
         return $html->saveHTML();
     }
 
+    /**
+     * Reads HTML attributes of the given TableElement model 
+     * from the attribute container and then applies them
+     * to the given HTML DOMElement.
+     * 
+     * @param \DOMElement $HTMLRepresentation
+     * @param TableElement $model
+     * 
+     * @return null
+     */
     private function addHTMLAttrs(\DOMElement $HTMLRepresentation, TableElement $model)
     {
         if (!$this->attrs->objHasAttr($model, self::HTML_ATTRS_KEY)) {
             return;
         }
         
-        foreach ($this->attrs->getObjAttrVal($model, self::HTML_ATTRS_KEY) as $attrName => $attrVal) {
-            $HTMLRepresentation->setAttribute($attrName, $attrVal);
+        $elementAttrs = $this->attrs->getObjAttrVal($model, self::HTML_ATTRS_KEY);
+        foreach ($elementAttrs as $name => $val) {
+            $HTMLRepresentation->setAttribute($name, $val);
         }
     }
 }
