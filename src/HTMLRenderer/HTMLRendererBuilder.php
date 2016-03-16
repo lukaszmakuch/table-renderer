@@ -11,6 +11,8 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer;
 
 use lukaszmakuch\ObjectAttributeContainer\Impl\ObjectAttributeContainerImpl;
 use lukaszmakuch\ObjectAttributeContainer\ObjectAttributeContainer;
+use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRenderer;
+use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRendererProxy;
 use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\TextRenderer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGridBuilder\FlatGridBuilder;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\HorizontalContainerFactory;
@@ -19,7 +21,7 @@ use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\WidthSyncStrategy;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\VerticalContainerFactory;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTreeBuilder\SizeAwareTreeBuilder;
-
+use lukaszmakuch\TableRenderer\TextValue;
 /**
  * Builds HTML renderer.
  * 
@@ -32,9 +34,19 @@ class HTMLRendererBuilder
      */
     private $attributeContainer;
     
+    /**
+     * @var AtomicValueRendererProxy
+     */
+    private $atomicValueRendererProxy;
+    
     public function __construct()
     {
         $this->attributeContainer = new ObjectAttributeContainerImpl();
+        $this->atomicValueRendererProxy = new AtomicValueRendererProxy();
+        $this->atomicValueRendererProxy->registerRenderer(
+            new TextRenderer(), 
+            TextValue::class
+        );
     }
     
     /**
@@ -47,6 +59,19 @@ class HTMLRendererBuilder
     public function setAttributeContainer(ObjectAttributeContainer $attributeContainer)
     {
         $this->attributeContainer = $attributeContainer;
+    }
+    
+    /**
+     * Allows to extend supported atomic cell values.
+     * 
+     * @param String $classOfAtomicValue
+     * @param AtomicValueRenderer $itsRenderer
+     * 
+     * @return null
+     */
+    public function addAtomicValueRenderer($classOfAtomicValue, AtomicValueRenderer $itsRenderer)
+    {
+        $this->atomicValueRendererProxy->registerRenderer($itsRenderer, $classOfAtomicValue);
     }
     
     /**
@@ -68,7 +93,7 @@ class HTMLRendererBuilder
                 )
             ),
             new FlatGridBuilder(),
-            new TextRenderer(),
+            $this->atomicValueRendererProxy,
             $this->attributeContainer
         );
     }

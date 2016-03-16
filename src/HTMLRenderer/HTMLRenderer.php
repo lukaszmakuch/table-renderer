@@ -14,11 +14,13 @@ use DOMElement;
 use DOMNode;
 use lukaszmakuch\ObjectAttributeContainer\ObjectAttributeContainer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRenderer;
+use lukaszmakuch\TableRenderer\HTMLRenderer\Exception\UnableToRender;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGrid\FlatGrid;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGrid\ValueHolder;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGridBuilder\FlatGridBuilder;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTreeBuilder\SizeAwareTreeBuilder;
 use lukaszmakuch\TableRenderer\TableElement;
+use \lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\Exception\UnableToRender as UnableToRenderAtomicValue;
 
 /**
  * Renders HTML tables based on tree structures.
@@ -62,6 +64,7 @@ class HTMLRenderer
      * @param TableElement $table
      * 
      * @return String html
+     * @throws UnableToRender
      */
     public function renderHTMLBasedOn(TableElement $table)
     {
@@ -87,7 +90,8 @@ class HTMLRenderer
      * @param int $rowIndex
      * @param FlatGrid $sourceGrid
      * 
-     * @return
+     * @return null
+     * @throws UnableToRender
      */
     private function fillRowWithCells(
         \DOMDocument $targetDocument, 
@@ -109,6 +113,7 @@ class HTMLRenderer
      * @param DOMDocument $targetDocument
      * 
      * @return null
+     * @thorws UnableToRender
      */
     private function addCell(
         ValueHolder $cellModel, 
@@ -127,10 +132,15 @@ class HTMLRenderer
      * @param ValueHolder $cellModel
      * 
      * @return DOMNode
+     * @throws UnableToRender
      */
     private function renderCellValue(ValueHolder $cellModel)
     {
-        return $this->atomicValueRenderer->render($cellModel->getHeldValue());
+        try {
+            return $this->atomicValueRenderer->render($cellModel->getHeldValue());
+        } catch (UnableToRenderAtomicValue $e) {
+            throw new UnableToRender();
+        }
     }
     
     /**

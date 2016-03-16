@@ -27,6 +27,7 @@
     },
     "require": {
         "lukaszmakuch/math": "^0.1.0",
-        "lukaszmakuch/object-attribute-container": "^0.1.0"
+        "lukaszmakuch/object-attribute-container": "^0.1.0",
+        "lukaszmakuch/class-based-registry": "^0.0.2"
     }
 }

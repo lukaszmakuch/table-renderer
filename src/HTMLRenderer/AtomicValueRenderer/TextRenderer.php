@@ -9,6 +9,11 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer;
 
+use DOMText;
+use lukaszmakuch\TableRenderer\AtomicCellValue;
+use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\Exception\UnableToRender;
+use lukaszmakuch\TableRenderer\TextValue;
+
 /**
  * Renders text.
  * 
@@ -16,9 +21,13 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer;
  */
 class TextRenderer implements AtomicValueRenderer
 {
-    public function render(\lukaszmakuch\TableRenderer\AtomicCellValue $value)
+    public function render(AtomicCellValue $value)
     {
-        /* @var $value \lukaszmakuch\TableRenderer\TextValue */
-        return new \DOMText($value->getText());
+        if (!($value instanceof TextValue)) {
+            throw new UnableToRender();
+        }
+        
+        /* @var $value TextValue */
+        return new DOMText($value->getText());
     }
 }
