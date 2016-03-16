@@ -127,7 +127,7 @@ echo $renderer->renderHTMLBasedOn($tree);
 ```
 #### Support of custom atomic values
 This renderer supports custom atomic values.
-A custom value should extend [AtomicCellValue](src/AtomicCellValue.php) and be supported by an instance of [AtomicValueRenderer](src/HTMLRenderer/AtomicValueRenderer.php).
+A custom value should extend [AtomicCellValue](src/AtomicCellValue.php) and be supported by an instance of [AtomicValueRenderer](src/HTMLRenderer/AtomicValueRenderer/AtomicValueRenderer.php).
 Then you can register a new atomic value renderer like that:
 ```php
 use lukaszmakuch\TableRenderer\HTMLRenderer\HTMLRendererBuilder;
