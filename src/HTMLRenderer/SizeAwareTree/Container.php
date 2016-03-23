@@ -9,21 +9,17 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree;
 
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Factory\SynchronizerFactory;
-
 abstract class Container extends ObservableElement
 {
     /**
      * @var Element[]
      */
     protected $elements;
-    private $synchronizerFactory;
     
-    public function __construct(SynchronizerFactory $synchronizerF)
+    public function __construct()
     {
         parent::__construct();
         $this->elements = [];
-        $this->synchronizerFactory = $synchronizerF;
     }
     
     /**
@@ -32,9 +28,6 @@ abstract class Container extends ObservableElement
     public function add(Element $element)
     {
         $this->elements[] = $element;
-        $synchronizer = $this->synchronizerFactory->getSynchronizerOf($this, $element);
-        $synchronizer->start();
-        $this->notifyObservers();
     }
     
     /**

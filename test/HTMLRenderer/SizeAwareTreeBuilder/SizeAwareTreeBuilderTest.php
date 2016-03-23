@@ -31,18 +31,7 @@ class SizeAwareTreeBuilderTest extends PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->builder = new SizeAwareTreeBuilder(
-            new VerticalContainerFactory(
-                new SynchronizerFactoryImpl(
-                    new HeightSyncStrategy()
-                )
-            ),
-            new HorizontalContainerFactory(
-                new SynchronizerFactoryImpl(
-                    new WidthSyncStrategy()
-                )
-            )
-        );
+        $this->builder = new SizeAwareTreeBuilder();
     }
     
     public function testBuildingTree()

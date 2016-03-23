@@ -13,7 +13,6 @@ use lukaszmakuch\TableRenderer\AtomicCellValue;
 use lukaszmakuch\TableRenderer\Container;
 use lukaszmakuch\TableRenderer\HorizontalContainer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\AtomicValue;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\ContainerFactory;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Element;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTreeBuilder\Exception\NothingBuiltYet;
 use lukaszmakuch\TableRenderer\TableElement;
@@ -22,31 +21,42 @@ use lukaszmakuch\TableRenderer\VerticalContainer;
 
 class SizeAwareTreeBuilder implements TableVisitor
 {
-    private $verticalContainerFactory;
-    private $horizontalContainerFactory;
     private $builtSizeAwareTree;
+    
+    /**
+     * @var \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\TreeVisitor[]
+     */
+    private $installersOfSynchronizers;
     
     public function __clone()
     {
         $this->builtSizeAwareTree = null;
     }
     
-    public function __construct(
-        ContainerFactory $verticalCompositeFactory,
-        ContainerFactory $horizontalCompositeFactory
-    ) {
-        $this->verticalContainerFactory = $verticalCompositeFactory;
-        $this->horizontalContainerFactory = $horizontalCompositeFactory;
+    public function __construct() {
+        $widthSynchronizer = new \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\SynchronizerImpl(new \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\WidthSyncStrategy());
+        $heightSynchronizer = new \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\SynchronizerImpl(new \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\HeightSyncStrategy());
+        
+        $this->installersOfSynchronizers = [];
+        $this->installersOfSynchronizers[] = new \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Installer\StickyCellsSynchronizerInstaller($widthSynchronizer, $heightSynchronizer);
+        $this->installersOfSynchronizers[] = new \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Installer\GridSynchronizerInstaller($widthSynchronizer, $heightSynchronizer);
     }
 
     /**
+     * @param boolean $installSynchronizers 
      * @return Element
      * @throws NothingBuiltYet
      */
-    public function getBuiltSizeAwareTree()
+    public function getBuiltSizeAwareTree($installSynchronizers = true)
     {
         if (is_null($this->builtSizeAwareTree)) {
             throw new NothingBuiltYet();
+        }
+        
+        if ($installSynchronizers) {
+            foreach ($this->installersOfSynchronizers as $installer) {
+                $this->builtSizeAwareTree->accept($installer);
+            }
         }
         
         return $this->builtSizeAwareTree;
@@ -59,28 +69,28 @@ class SizeAwareTreeBuilder implements TableVisitor
 
     public function visitHorizontalContainer(HorizontalContainer $horizontalContainer)
     {
-        $this->buildSizeAwareContainerFrom($this->horizontalContainerFactory, $horizontalContainer);
+        $this->buildSizeAwareContainerFrom(new \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\HorizontalContainer(), $horizontalContainer);
     }
 
     public function visitVerticalContainer(VerticalContainer $verticalContainer)
     {
-        $this->buildSizeAwareContainerFrom($this->verticalContainerFactory, $verticalContainer);
+        $this->buildSizeAwareContainerFrom(new \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\VerticalContainer(), $verticalContainer);
     }
     
     /**
      * Fills $this->builtSizeAwareTree with a new size aware container with content
      * created based on the given container.
      * 
-     * @param ContainerFactory $containerFactory
+     * @param \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Container $newContainer
      * @param Container $sourceContainer
      * 
      * @return null
      */
     private function buildSizeAwareContainerFrom(
-        ContainerFactory $containerFactory, 
+        \lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Container $newContainer, 
         Container $sourceContainer
     ) {
-        $this->builtSizeAwareTree = $containerFactory->buildContainer();
+        $this->builtSizeAwareTree = $newContainer;
         foreach ($sourceContainer->getElements() as $elementtoAdd) {
             $this->builtSizeAwareTree->add($this->getSizeAwareTreeOf($elementtoAdd));
         }
@@ -94,6 +104,6 @@ class SizeAwareTreeBuilder implements TableVisitor
     {
         $builder = clone $this;
         $tableElement->accept($builder);
-        return $builder->getBuiltSizeAwareTree();
+        return $builder->getBuiltSizeAwareTree(false);
     }
 }

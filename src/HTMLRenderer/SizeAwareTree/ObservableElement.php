@@ -17,7 +17,7 @@ abstract class ObservableElement implements Element
     {
         $this->observers = new \SplObjectStorage();
     }
-
+    
     public function observeBy(ElementObserver $observer)
     {
         $this->observers->attach($observer);

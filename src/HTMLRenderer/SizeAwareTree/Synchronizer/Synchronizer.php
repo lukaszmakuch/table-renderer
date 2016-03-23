@@ -9,15 +9,17 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer;
 
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\ElementObserver;
+use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Element;
 
 /**
  * Somehow syncrhonizes two elements.
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
  */
-interface Synchronizer extends ElementObserver
+interface Synchronizer
 {
     /**
      * @return null
      */
-    public function start();
+    public function synchronize(Element $e1, Element $e2);
 }

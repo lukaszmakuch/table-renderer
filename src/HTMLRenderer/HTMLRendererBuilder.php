@@ -80,18 +80,7 @@ class HTMLRendererBuilder
     public function buildRenderer()
     {
         return new HTMLRenderer(
-            new SizeAwareTreeBuilder(
-                new VerticalContainerFactory(
-                    new SynchronizerFactoryImpl(
-                        new HeightSyncStrategy()
-                    )
-                ),
-                new HorizontalContainerFactory(
-                    new SynchronizerFactoryImpl(
-                        new WidthSyncStrategy()
-                    )
-                )
-            ),
+            new SizeAwareTreeBuilder(),
             new FlatGridBuilder(),
             $this->atomicValueRendererProxy,
             $this->attributeContainer

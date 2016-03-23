@@ -14,27 +14,15 @@ use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\
 
 class SynchronizerImpl implements Synchronizer
 {
-    private $e1;
-    private $e2;
-    private $synchronizingStrategy;
+    private $syncStrategy;
     
-    public function __construct(Element $e1, Element $e2, SynchronizingStrategy $strategy)
+    public function __construct(SynchronizingStrategy $syncStrategy)
     {
-        $this->e1 = $e1;
-        $this->e2 = $e2;
-        $this->synchronizingStrategy = $strategy;
+        $this->syncStrategy = $syncStrategy;
     }
     
-    public function start()
+    public function synchronize(Element $e1, Element $e2)
     {
-        $this->e1->observeBy($this);
-        $this->e2->observeBy($this);
-        $this->noticeChangeOf($this->e1);
-        $this->noticeChangeOf($this->e2);
-    }
-    
-    public function noticeChangeOf(Element $e)
-    {
-        $this->synchronizingStrategy->synchronize($this->e1, $this->e2);
+        (new Watcher($e1, $e2, $this->syncStrategy))->start();
     }
 }
