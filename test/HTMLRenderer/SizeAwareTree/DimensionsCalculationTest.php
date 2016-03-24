@@ -9,7 +9,14 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree;
 
-class DimensionsCalculationTest extends \PHPUnit_Framework_TestCase
+use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Installer\GridSynchronizerInstaller;
+use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Installer\StickyCellsSynchronizerInstaller;
+use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\HeightSyncStrategy;
+use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\WidthSyncStrategy;
+use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\SynchronizerImpl;
+use PHPUnit_Framework_TestCase;
+
+class DimensionsCalculationTest extends PHPUnit_Framework_TestCase
 {
     public function testHeightSync()
     {
@@ -404,11 +411,11 @@ class DimensionsCalculationTest extends \PHPUnit_Framework_TestCase
     
     private function installSynchronizersTo(Element $someTable)
     {
-        $widthSynchronizer = new Synchronizer\SynchronizerImpl(new Synchronizer\Strategy\WidthSyncStrategy());
-        $heightSynchronizer = new Synchronizer\SynchronizerImpl(new Synchronizer\Strategy\HeightSyncStrategy());
+        $widthSynchronizer = new SynchronizerImpl(new WidthSyncStrategy());
+        $heightSynchronizer = new SynchronizerImpl(new HeightSyncStrategy());
         
-        $gridSyncInstaller = new Synchronizer\Installer\GridSynchronizerInstaller($widthSynchronizer, $heightSynchronizer);
-        $stickyCellsInstaller = new Synchronizer\Installer\StickyCellsSynchronizerInstaller($widthSynchronizer, $heightSynchronizer);
+        $gridSyncInstaller = new GridSynchronizerInstaller($widthSynchronizer, $heightSynchronizer);
+        $stickyCellsInstaller = new StickyCellsSynchronizerInstaller($widthSynchronizer, $heightSynchronizer);
         
         $someTable->accept($stickyCellsInstaller);
         $someTable->accept($gridSyncInstaller);

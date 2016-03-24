@@ -11,6 +11,11 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Str
 
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Element;
 
+/**
+ * Sets width of an element. 
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 class WidthSyncStrategy extends DimensionSyncStrategy
 {
     protected function getDimensionOf(Element $e)
