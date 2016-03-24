@@ -9,6 +9,11 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree;
 
+/**
+ * An element which may contain other elements.
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 abstract class Container extends ObservableElement
 {
     /**

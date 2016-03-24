@@ -11,6 +11,9 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Str
 
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Element;
 
+/**
+ * Somehow performs synchronization of two elements.
+ */
 interface SynchronizingStrategy
 {
     public function synchronize(Element $e1, Element $e2);

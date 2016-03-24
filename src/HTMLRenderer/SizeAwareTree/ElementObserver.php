@@ -9,6 +9,11 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree;
 
+/**
+ * Notices changes of an element.
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 interface ElementObserver
 {
     /**

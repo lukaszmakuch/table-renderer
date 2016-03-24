@@ -9,6 +9,11 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree;
 
+/**
+ * An element thay cannot be splitted. 
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 class AtomicValue extends ObservableElement
 {
     private $heldValue;

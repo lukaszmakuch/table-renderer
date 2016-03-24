@@ -11,6 +11,11 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Str
 
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Element;
 
+/**
+ * Sets height of an element. 
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 class HeightSyncStrategy extends DimensionSyncStrategy
 {
     protected function getDimensionOf(Element $e)

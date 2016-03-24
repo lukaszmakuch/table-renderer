@@ -9,6 +9,11 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree;
 
+/**
+ * Supports observation.
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 abstract class ObservableElement implements Element
 {
     private $observers;

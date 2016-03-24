@@ -9,6 +9,20 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree;
 
+/**
+ * Holds elements like that:
+ * <pre>
+ *  _
+ * |a|
+ * |_|
+ * |b|
+ * |_|
+ * |c|
+ * |_|
+ * </pre>
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 class HorizontalContainer extends Container
 {
     public function getHeight()

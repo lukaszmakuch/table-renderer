@@ -12,7 +12,7 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Element;
 
 /**
- * Somehow syncrhonizes two elements.
+ * Somehow syncrhonizes two elements (and keep them synchronized).
  * 
  * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
  */

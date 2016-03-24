@@ -15,13 +15,9 @@ use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRende
 use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRendererProxy;
 use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\TextRenderer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\FlatGridBuilder\FlatGridBuilder;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\HorizontalContainerFactory;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Factory\SynchronizerFactoryImpl;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\HeightSyncStrategy;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\WidthSyncStrategy;
-use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\VerticalContainerFactory;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTreeBuilder\SizeAwareTreeBuilder;
 use lukaszmakuch\TableRenderer\TextValue;
+
 /**
  * Builds HTML renderer.
  * 

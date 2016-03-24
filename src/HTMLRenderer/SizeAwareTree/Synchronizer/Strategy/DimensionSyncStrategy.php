@@ -12,6 +12,11 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Str
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Element;
 use lukaszmakuch\Math;
 
+/**
+ * Synchronizes dimensions of elements. 
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 abstract class DimensionSyncStrategy implements SynchronizingStrategy
 {
     public function synchronize(Element $e1, Element $e2)

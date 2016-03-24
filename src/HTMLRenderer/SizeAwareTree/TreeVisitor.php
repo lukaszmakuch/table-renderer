@@ -9,6 +9,11 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree;
 
+/**
+ * Visits tree structures.
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 interface TreeVisitor
 {
     public function visitAtomicValue(AtomicValue $value);

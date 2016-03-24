@@ -11,6 +11,7 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer\FlatGrid\Exception;
 
 /**
  * Thrown when trying to access a nonexistent value holder.
+ * 
  * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
  */
 class ValueNotFound extends \RuntimeException

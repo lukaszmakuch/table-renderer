@@ -12,10 +12,19 @@ namespace lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Element;
 use lukaszmakuch\TableRenderer\HTMLRenderer\SizeAwareTree\Synchronizer\Strategy\SynchronizingStrategy;
 
+/**
+ * Uses some strategy to synchronize two elements. 
+ * 
+ * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
+ */
 class SynchronizerImpl implements Synchronizer
 {
     private $syncStrategy;
     
+    /**
+     * @param SynchronizingStrategy $syncStrategy how a single synchronization
+     * is performed
+     */
     public function __construct(SynchronizingStrategy $syncStrategy)
     {
         $this->syncStrategy = $syncStrategy;
