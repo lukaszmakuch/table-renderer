@@ -9,10 +9,11 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer;
 
-use DOMDocument;
+use DOMText;
 use lukaszmakuch\ObjectAttributeContainer\Impl\ObjectAttributeContainerImpl;
 use lukaszmakuch\TableRenderer\AtomicCellValue;
 use lukaszmakuch\TableRenderer\HorizontalContainer;
+use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRenderer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\Exception\UnableToRender;
 use lukaszmakuch\TableRenderer\TextValue;
 use lukaszmakuch\TableRenderer\VerticalContainer;
@@ -20,122 +21,222 @@ use PHPUnit_Framework_TestCase;
 
 class HTMLRendererTest extends PHPUnit_Framework_TestCase
 {
+    /**
+     * @var HTMLRendererBuilder
+     */
+    private $builder;
     
-    public function testRenderingTable()
+    protected function setUp()
     {
-        $attrs = new ObjectAttributeContainerImpl();
-        $builder = new HTMLRendererBuilder();
-        $builder->setAttributeContainer($attrs);
-        $htmlRenderer = $builder->buildRenderer();
-        
+        $this->builder = new HTMLRendererBuilder();
+    }
+    
+    public function testRenderingComplexTable()
+    {
         /**
-         * _________
-         * |a|  x  |
-         * | |_____|
-         * |_|  y  |
-         * | |__ __|
-         * |b|  |  |
-         * | |z1|z2|
-         * |_|_ |__|
+         * __________________________________________________________________________
+         * |          |          |                            |                     |
+         * |          |          |                            |                     |
+         * |          |          |                            |                     |
+         * |          |          |                            |                     |
+         * |  h1_1    | h1_2     |                            |       h3            |
+         * |          |          |                            |                     |
+         * |          |          |                            |                     |
+         * |__________|__________|............................|_____________________|
+         * |          .          |                            |                     |
+         * |          .          |                            |                     |
+         * |          .          |                            |                     |
+         * |          .          |                            |                     |
+         * |      c1_1.          |           h2               |                     |
+         * |          .          |                            |      c3_1           |
+         * |          .          |                            |                     |
+         * |          .          |                            |                     |
+         * |          .          |                            |                     |
+         * |          .          |                            |                     |
+         * |__________.__________|____________________________|_____________________|
+         * |          |     |    |                            |                     |
+         * |          |     |    |                            |                     |
+         * |          |     |    |                            |       c3_2_1        |
+         * |          |     |    |          c2_1              |                     |
+         * |          |c1_2_|c1_2|............................|_____________________|
+         * |  c1_2_1  |2_1  |_2_2|                            |                     |
+         * |          |     |    |                            |                     |
+         * |          |     |    |                            |       c3_2_2        |
+         * |          |     |    |                            |                     |
+         * |__________|_____|____|____________________________|_____________________|
          */
+
+        ob_start();
+        ?>
+            <table>
+                <tr>
+                    <td colspan="1" rowspan="1">h1_1</td>
+                    <td colspan="2" rowspan="1">h1_2</td>
+                    <td colspan="1" rowspan="2">h2</td>
+                    <td colspan="1" rowspan="1">h3</td>
+                </tr>
+                <tr>
+                    <td colspan="3" rowspan="1">c1_1</td>
+                    <td colspan="1" rowspan="1">c3_1</td>
+                </tr>
+                <tr>
+                    <td colspan="1" rowspan="2">c1_2_1</td>
+                    <td colspan="1" rowspan="2">c1_2_2_1</td>
+                    <td colspan="1" rowspan="2">c1_2_2_2</td>
+                    <td colspan="1" rowspan="2">c2_1</td>
+                    <td colspan="1" rowspan="1">c3_2_1</td>
+
+                </tr>
+                <tr>
+                    <td colspan="1" rowspan="1">c3_2_2</td>
+                </tr>
+
+            </table>
+        <?php
+        $expectedHTML = ob_get_clean();
         
-        $tableTree = $attrs->addObjAttrs((new VerticalContainer())
-            ->add((new HorizontalContainer())
-                ->add(new TextValue("a"))
-                ->add($attrs->addObjAttrs(
-                    new TextValue("b"),
-                    ['attrs' => ['class' => 'cell']]
-                ))
-            )
-            ->add((new HorizontalContainer())
-                ->add(new TextValue("x"))
-                ->add(new TextValue("y"))
-                ->add((new VerticalContainer())
-                    ->add(new TextValue("z1"))
-                    ->add(new TextValue("z2"))
+        $tree = 
+            (new VerticalContainer())
+                ->add((new HorizontalContainer())
+                    ->add((new VerticalContainer())
+                        ->add(new TextValue("h1_1"))
+                        ->add(new TextValue("h1_2"))
+                    )
+                    ->add(new TextValue("c1_1"))
+                    ->add((new VerticalContainer())
+                        ->add(new TextValue("c1_2_1"))
+                        ->add((new VerticalContainer())
+                            ->add(new TextValue("c1_2_2_1"))
+                            ->add(new TextValue("c1_2_2_2"))
+                        )
+                    )
                 )
-            ), ["attrs" => ['border' => 1]]);
+                ->add((new HorizontalContainer())
+                    ->add(new TextValue("h2"))
+                    ->add(new TextValue("c2_1"))
+                )
+                ->add((new HorizontalContainer())
+                    ->add(new TextValue("h3"))
+                    ->add(new TextValue("c3_1"))
+                    ->add((new HorizontalContainer())
+                        ->add(new TextValue("c3_2_1"))
+                        ->add(new TextValue("c3_2_2"))
+                    )
+                )
+        ;
         
-        $renderedHTML = $htmlRenderer->renderHTMLBasedOn($tableTree);
+        $renderer = $this->builder->buildRenderer();
         
-        //load result to parser
-        $dom = new DOMDocument();
-        $dom->loadHTML($renderedHTML);
+        $renderedHTML = $renderer->renderHTMLBasedOn($tree);
         
-        //assert just one <table> with proper attrs
-        $domTables = $dom->getElementsByTagName("table");
-        $this->assertEquals(1, $domTables->length);
-        $domTable = $domTables->item(0);
-        $this->assertTrue($domTable->hasAttribute("border"));
-        $this->assertEquals(1, $domTable->getAttribute("border"));
+        $this->assertXmlStringEqualsXmlString($expectedHTML, $renderedHTML);
+    }
+    
+    public function testAddingHTMLAttributes()
+    {
+        /**
+         * _______________________
+         * |  a       | b        |
+         * |__________|__________|
+         */
+
+        ob_start();
+        ?>
+            <table border="1">
+                <tr>
+                    <td colspan="1" rowspan="1" style="color: #f00">a</td>
+                    <td colspan="1" rowspan="1">b</td>
+                </tr>
+            </table>
+        <?php
+        $expectedHTML = ob_get_clean();
         
-        //get all 6 <tr>
-        $trElements = $domTable->getElementsByTagName("tr");
-        $this->assertEquals(6, $trElements->length);
+        $attrs = new ObjectAttributeContainerImpl();
+        $this->builder->setAttributeContainer($attrs);
         
-        //check row with "a" and "x"
-        $axRow = $trElements->item(0);
-        $axCells = $axRow->getElementsByTagName("td");
-        $this->assertEquals(2, $axCells->length);
-        $aCell = $axCells->item(0);
-        $this->assertEquals("a", $aCell->nodeValue);
+        $tree = 
+            $attrs->addObjAttrs(
+                (new VerticalContainer())
+                    ->add($attrs->addObjAttrs(
+                        new TextValue("a"),
+                        ["attrs" => ["style" => "color: #f00"]]
+                    ))
+                    ->add(new TextValue("b"))
+                ,
+                ["attrs" => ["border" => 1]]
+            )
+        ;
         
-        $this->assertEquals(3, $aCell->getAttribute("rowspan"));
-        $xCell = $axCells->item(1);
-        $this->assertEquals("x", $xCell->nodeValue);
-        $this->assertEquals(2, $xCell->getAttribute("rowspan"));
-        $this->assertEquals(2, $xCell->getAttribute("colspan"));
+        $renderer = $this->builder->buildRenderer();
         
-        //check empty row 1
-        $emptyRow1 = $trElements->item(1);
-        $this->assertEquals(0, $emptyRow1->getElementsByTagName("td")->length);
+        $renderedHTML = $renderer->renderHTMLBasedOn($tree);
         
-        //check row with "y"
-        $yRow = $trElements->item(2);
-        $yCells = $yRow->getElementsByTagName("td");
-        $this->assertEquals(1, $yCells->length);
-        $yCell = $yCells->item(0);
-        $this->assertEquals("y", $yCell->nodeValue);
-        $this->assertEquals(2, $yCell->getAttribute("rowspan"));
-        $this->assertEquals(2, $yCell->getAttribute("colspan"));
-        
-        //check row with "b"
-        $bRow = $trElements->item(3);
-        $bCells = $bRow->getElementsByTagName("td");
-        $this->assertEquals(1, $bCells->length);
-        $bCell = $bCells->item(0);
-        $this->assertEquals("b", $bCell->nodeValue);
-        $this->assertEquals(3, $bCell->getAttribute("rowspan"));
-        $this->assertTrue($bCell->hasAttribute("class"));
-        $this->assertEquals("cell", $bCell->getAttribute("class"));
-        
-        //check row with "z1" and "z2"
-        $zRow = $trElements->item(4);
-        $zCells = $zRow->getElementsByTagName("td");
-        $this->assertEquals(2, $zCells->length);
-        $z1Cell = $zCells->item(0);
-        $this->assertEquals("z1", $z1Cell->nodeValue);
-        $this->assertEquals(2, $z1Cell->getAttribute("rowspan"));
-        $z2Cell = $zCells->item(1);
-        $this->assertEquals("z2", $z2Cell->nodeValue);
-        $this->assertEquals(2, $z2Cell->getAttribute("rowspan"));
-        
-        //check empty row 2
-        $emptyRow2 = $trElements->item(5);
-        $this->assertEquals(0, $emptyRow2->getElementsByTagName("td")->length);
+        $this->assertXmlStringEqualsXmlString($expectedHTML, $renderedHTML);
     }
     
     public function testExceptionWhenUnsupportedAtomicValue()
     {
-        $builder = new HTMLRendererBuilder();
-        $htmlRenderer = $builder->buildRenderer();
+        $renderer = $this->builder->buildRenderer();
         
         $this->setExpectedException(UnableToRender::class);
         
-        $htmlRenderer->renderHTMLBasedOn(new UnsupportedAtomicValue());
+        $renderer->renderHTMLBasedOn(new UnsupportedAtomicValue());
     }
+    
+    public function testBuildingWithNewAtomicRenderer()
+    {
+        /**
+         * ___________
+         * |test-value|
+         * |__________|
+         */
+
+        $oneCellTable = new NewAtomicType("test-value");
+        
+        ob_start();
+        ?>
+            <table>
+                <tr>
+                    <td colspan="1" rowspan="1">test-value</td>
+                </tr>
+            </table>
+        <?php
+        
+        $expectedHTML = ob_get_clean();
+        
+        //add support of a new atomic value
+        $this->builder->addAtomicValueRenderer(
+            NewAtomicType::class,
+            new NewAtomicTypeRenderer()
+        );
+        $renderer = $this->builder->buildRenderer();
+        
+        $renderedHTML = $renderer->renderHTMLBasedOn($oneCellTable);
+        
+        $this->assertXmlStringEqualsXmlString($expectedHTML, $renderedHTML);
+    }
+
 }
 
 class UnsupportedAtomicValue extends AtomicCellValue
 {
+}
+
+class NewAtomicType extends AtomicCellValue
+{
+    public $itsValue;
+    
+    public function __construct($itsValue)
+    {
+        $this->itsValue = $itsValue;
+    }
+}
+
+class NewAtomicTypeRenderer implements AtomicValueRenderer
+{
+    public function render(AtomicCellValue $value)
+    {
+        /* @var $value NewAtomicType */
+        return new DOMText($value->itsValue);
+    }
 }
