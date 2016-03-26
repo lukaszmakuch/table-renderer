@@ -45,6 +45,8 @@ class HorizontalContainer extends Container
         foreach ($this->elements as $element) {
             $element->setHeight($element->getHeight() * $ratio);
         }
+        
+        $this->notifyObservers();
     }
 
     public function setWidth($width)
@@ -52,6 +54,8 @@ class HorizontalContainer extends Container
         foreach ($this->elements as $element) {
             $element->setWidth($width);
         }
+        
+        $this->notifyObservers();
     }
 
     public function accept(TreeVisitor $visitor)

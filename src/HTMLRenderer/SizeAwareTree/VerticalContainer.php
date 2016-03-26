@@ -41,6 +41,7 @@ class VerticalContainer extends Container
             $element->setHeight($height);
         }
 
+        $this->notifyObservers();
     }
 
     public function setWidth($width)
@@ -49,6 +50,8 @@ class VerticalContainer extends Container
         foreach ($this->elements as $element) {
             $element->setWidth($element->getWidth() * $ratio);
         }
+        
+        $this->notifyObservers();
     }
     
     public function accept(TreeVisitor $visitor)
