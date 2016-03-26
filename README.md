@@ -1,6 +1,9 @@
 [![travis](https://travis-ci.org/lukaszmakuch/table-renderer.svg)](https://travis-ci.org/lukaszmakuch/table-renderer)
 # Table renderer
 Allows to render tree structures as tables.
+## HTML example
+[![alt text](http://lukaszmakuch.pl/misc/table_renderer_one_step.jpg "Tree structure compared to an HTML structure")](http://lukaszmakuch.pl/misc/table_renderer.jpg)
+Click the image for more examples.
 ## Trees
 ### Elements
 There are 3 main elements of every tree:
