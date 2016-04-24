@@ -58,9 +58,10 @@ $table = (new HorizontalContainer())
 ```
 ## Renderers
 Allows to render tables based on tree structures.
+
 ### HTMLRenderer
 Renders HTML code.
-#### Getting renderer
+#### Getting the renderer
 ```php
 use lukaszmakuch\TableRenderer\HTMLRenderer\HTMLRendererBuilder;
 
@@ -78,7 +79,7 @@ $tree = (new VerticalContainer())
     ->add(new TextValue("right"));
 
 /* @var $renderer HTMLRenderer */
-echo $renderer->renderHTMLBasedOn(tree);
+echo $renderer->renderHTMLBasedOn($tree);
 ```
 
 #### Adding HTML attributes
@@ -141,6 +142,49 @@ $builder->addAtomicValueRenderer(
     new NewAtomicTypeRenderer()
 );
 ```
+
+### ScalarRenderer
+It renders models of tables as scalar values or arrays of scalar values (or other arrays).
+#### Getting the renderer
+```php
+use lukaszmakuch\TableRenderer\ScalarRenderer\ScalarRendererBuilder;
+
+$renderer = (new ScalarRendererBuilder())->build();
+```
+#### Basic usage
+```php
+use lukaszmakuch\TableRenderer\VerticalContainer;
+use lukaszmakuch\TableRenderer\TextValue;
+use lukaszmakuch\TableRenderer\ScalarRenderer\ScalarRenderer;
+
+$tree = (new VerticalContainer())
+    ->add(new TextValue("first"))
+    ->add(new TextValue("second"));
+
+/* @var $renderer ScalarRenderer */
+var_dump($renderer->getScalarRepresentationOf($tree));
+//[
+//    'type' => 'vertical-container',
+//    'value' => [
+//        ['type' => 'text', 'value' => 'first'],
+//        ['type' => 'text', 'value' => 'second']
+//     ]
+//]
+```
+#### Support of custom elements
+This renderer supports custom elements.
+A custom element should extend [AtomicCellValue](src/AtomicCellValue.php) and be supported by an instance of [ScalarRenderer](src/ScalarRenderer/ScalarRenderer.php).
+Then you can register a new element renderer like that:
+```php
+use lukaszmakuch\TableRenderer\ScalarRenderer\ScalarRendererBuilder;
+
+/* @var @builder ScalarRendererBuilder */
+$builder->addRenderer(
+    NewAtomicType::class,
+    new NewAtomicTypeRenderer()
+);
+```
+
 ## Examples
 Check examples in the [examples directory](examples/)
 ## Installation
