@@ -19,6 +19,7 @@ use lukaszmakuch\TableRenderer\ScalarRenderer\Exception\UnableToBuild;
 use lukaszmakuch\TableRenderer\ScalarRenderer\Impl\ClassBasedProxy;
 use lukaszmakuch\TableRenderer\ScalarRenderer\Impl\ContainerRenderer;
 use lukaszmakuch\TableRenderer\ScalarRenderer\Impl\TextRenderer;
+use lukaszmakuch\TableRenderer\TableElement;
 use lukaszmakuch\TableRenderer\TextValue;
 use lukaszmakuch\TableRenderer\VerticalContainer;
 
@@ -46,7 +47,7 @@ class ScalarRendererBuilder
             new ContainerRenderer("horizontal-container")
         );
     }
-    
+
     /**
      * @param String $supportedClass
      * @param ScalarRenderer $prototypeOfItsRenderer
@@ -69,7 +70,7 @@ class ScalarRendererBuilder
     {
         $renderer = new ClassBasedProxy();
         $actualRenderer = new ClassBasedProxy();
-        $renderer->registerRenderer(\lukaszmakuch\TableRenderer\TableElement::class, $actualRenderer);
+        $renderer->registerRenderer(TableElement::class, $actualRenderer);
         $dependencySetter = new SilentPropertySetter(new SimplePropertySetter(
             new PickByClass(ScalarRendererUser::class),
             new CallOnlyMethodAsSetter(ScalarRendererUser::class),
@@ -83,7 +84,7 @@ class ScalarRendererBuilder
                 $atomicValRenderer
             );
         }
-        
+
         return $renderer;
     }
 }
