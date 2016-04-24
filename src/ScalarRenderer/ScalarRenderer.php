@@ -17,7 +17,7 @@ use lukaszmakuch\TableRenderer\TableElement;
  * 
  * @author Łukasz Makuch <kontakt@lukaszmakuch.pl>
  */
-class ScalarRenderer
+interface ScalarRenderer
 {
     /**
      * @return mixed a scalar value or an array of scalar values (or arrays of them)

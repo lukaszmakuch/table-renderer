@@ -9,14 +9,14 @@
 
 namespace lukaszmakuch\TableRenderer\HTMLRenderer;
 
-use DOMText;
 use lukaszmakuch\ObjectAttributeContainer\Impl\ObjectAttributeContainerImpl;
-use lukaszmakuch\TableRenderer\AtomicCellValue;
 use lukaszmakuch\TableRenderer\HorizontalContainer;
-use lukaszmakuch\TableRenderer\HTMLRenderer\AtomicValueRenderer\AtomicValueRenderer;
 use lukaszmakuch\TableRenderer\HTMLRenderer\Exception\UnableToRender;
 use lukaszmakuch\TableRenderer\TextValue;
 use lukaszmakuch\TableRenderer\VerticalContainer;
+use lukaszmakuch\TableRenderer\NewAtomicType;
+use lukaszmakuch\TableRenderer\HTMLRenderer\NewAtomicTypeRenderer;
+use lukaszmakuch\TableRenderer\UnsupportedAtomicValue;
 use PHPUnit_Framework_TestCase;
 
 class HTMLRendererTest extends PHPUnit_Framework_TestCase
@@ -216,27 +216,4 @@ class HTMLRendererTest extends PHPUnit_Framework_TestCase
         $this->assertXmlStringEqualsXmlString($expectedHTML, $renderedHTML);
     }
 
-}
-
-class UnsupportedAtomicValue extends AtomicCellValue
-{
-}
-
-class NewAtomicType extends AtomicCellValue
-{
-    public $itsValue;
-    
-    public function __construct($itsValue)
-    {
-        $this->itsValue = $itsValue;
-    }
-}
-
-class NewAtomicTypeRenderer implements AtomicValueRenderer
-{
-    public function render(AtomicCellValue $value)
-    {
-        /* @var $value NewAtomicType */
-        return new DOMText($value->itsValue);
-    }
 }

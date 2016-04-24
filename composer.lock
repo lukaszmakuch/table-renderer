@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cb691c9c6145f2c25af3f692f3c35dda",
-    "content-hash": "c62a2a41b7edbe4cef1dc025800e1d97",
+    "hash": "1aaaf3cd9521258dac927c78cd03a7bb",
+    "content-hash": "0d43d37f1f9dd97959ea84bc6b3f0972",
     "packages": [
         {
             "name": "lukaszmakuch/class-based-registry",
@@ -120,6 +120,43 @@
             ],
             "description": "Allows to attach some attributes to objects",
             "time": "2016-03-10 19:20:19"
+        },
+        {
+            "name": "lukaszmakuch/property-setter",
+            "version": "v0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lukaszmakuch/property-setter.git",
+                "reference": "f330c83ca24223dd879bdf946c066e27f115548f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lukaszmakuch/property-setter/zipball/f330c83ca24223dd879bdf946c066e27f115548f",
+                "reference": "f330c83ca24223dd879bdf946c066e27f115548f",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "5.3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "lukaszmakuch\\PropertySetter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Łukasz Makuch",
+                    "email": "kontakt@lukaszmakuch.pl",
+                    "homepage": "http://lukaszmakuch.pl"
+                }
+            ],
+            "description": "Sets properties of already existing objects.",
+            "time": "2016-04-19 18:16:50"
         }
     ],
     "packages-dev": [
